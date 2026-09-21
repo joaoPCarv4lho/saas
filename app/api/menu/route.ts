@@ -21,7 +21,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { restaurantId, categoryName, itemName, priceCents } = await request.json();
+  const body = await request.json();
+  let restaurantId = body.restaurantId;
+  const { categoryName, itemName, priceCents } = body;
+  if (!restaurantId) {
+    const session = parseSessionCookie((await cookies()).get('session')?.value);
+    restaurantId = session?.restaurantId ?? null;
+  }
+  if (!restaurantId) return NextResponse.json({ error: 'restaurantId required' }, { status: 401 });
 
   let category = await prisma.menuCategory.findFirst({ where: { restaurantId, name: categoryName } });
   if (!category) {
