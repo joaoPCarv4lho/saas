@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { parseSessionCookie } from '@/lib/auth';
+import { cookies } from 'next/headers';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const restaurantId = url.searchParams.get('restaurantId');
+  let restaurantId = url.searchParams.get('restaurantId');
+  if (!restaurantId) {
+    const session = parseSessionCookie((await cookies()).get('session')?.value);
+    restaurantId = session?.restaurantId ?? null;
+  }
   if (!restaurantId) return NextResponse.json({ error: 'restaurantId required' }, { status: 400 });
 
   const categories = await prisma.menuCategory.findMany({

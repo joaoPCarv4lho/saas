@@ -1,12 +1,23 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { parseSessionCookie } from '@/lib/auth';
+import { cookies } from 'next/headers';
+
+export async function GET() {
+  const session = parseSessionCookie((await cookies()).get('session')?.value);
+  if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const orders = await prisma.order.findMany({ where: { restaurantId: session.restaurantId }, orderBy: { createdAt: 'desc' } });
+  return NextResponse.json({ orders });
+}
 
 export async function POST(request: Request) {
-  const { restaurantId, staffId, deviceId, locationType, locationLabel } = await request.json();
+  const session = parseSessionCookie((await cookies()).get('session')?.value);
+  if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { deviceId, locationType, locationLabel } = await request.json();
   const order = await prisma.order.create({
     data: {
-      restaurantId,
-      createdByStaffId: staffId,
+      restaurantId: session.restaurantId,
+      createdByStaffId: session.staffId,
       deviceId,
       locationType,
       locationLabel,
