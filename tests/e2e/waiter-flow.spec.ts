@@ -18,3 +18,8 @@ test('waiter creates a comanda and adds an item', async ({ page, request }) => {
   await page.getByRole('button', { name: new RegExp(menuItemName) }).click();
   await expect(page.getByText(new RegExp(`1x`))).toBeVisible();
 });
+
+test('comandas redirects to login when session cookie is missing', async ({ page }) => {
+  await page.goto('/comandas');
+  await expect(page).toHaveURL(/login/);
+});

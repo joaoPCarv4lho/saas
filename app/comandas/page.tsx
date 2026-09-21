@@ -19,8 +19,14 @@ export default function ComandasPage() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch('/api/orders').then((r) => r.json()).then((d) => setOrders(d.orders ?? []));
-  }, []);
+    fetch('/api/orders').then((r) => {
+      if (r.status === 401) {
+        router.push('/login');
+        return null;
+      }
+      return r.json();
+    }).then((d) => setOrders(d?.orders ?? []));
+  }, [router]);
 
   async function createOrder() {
     const res = await fetch('/api/orders', {
@@ -28,6 +34,10 @@ export default function ComandasPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ deviceId: getDeviceId(), locationType: 'table', locationLabel }),
     });
+    if (res.status === 401) {
+      router.push('/login');
+      return;
+    }
     const { order } = await res.json();
     router.push(`/comandas/${order.id}`);
   }
