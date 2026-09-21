@@ -1,0 +1,82 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Restaurant {
+  id       String   @id @default(cuid())
+  name     String
+  pinHash  String
+  staff    Staff[]
+  categories MenuCategory[]
+  orders   Order[]
+}
+
+model Staff {
+  id           String     @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  name         String
+  isAdmin      Boolean    @default(false)
+  orders       Order[]
+}
+
+model MenuCategory {
+  id           String     @id @default(cuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  name         String
+  sortOrder    Int        @default(0)
+  items        MenuItem[]
+}
+
+model MenuItem {
+  id          String       @id @default(cuid())
+  categoryId  String
+  category    MenuCategory @relation(fields: [categoryId], references: [id])
+  name        String
+  priceCents  Int
+  available   Boolean      @default(true)
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  restaurantId   String
+  restaurant     Restaurant  @relation(fields: [restaurantId], references: [id])
+  locationType   String      // OrderLocationType
+  locationLabel  String      // table number or "balcao"
+  status         String      // OrderStatus
+  createdByStaffId String
+  createdByStaff Staff       @relation(fields: [createdByStaffId], references: [id])
+  deviceId       String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+  payments       Payment[]
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  menuItemId  String
+  menuItem    MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity    Int
+  note        String   @default("")
+  status      String   // OrderItemStatus
+  updatedAt   DateTime @updatedAt
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id])
+  method     String   // PaymentMethod
+  amountCents Int
+  createdAt  DateTime @default(now())
+}
