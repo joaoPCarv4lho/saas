@@ -6,7 +6,11 @@ import { cookies } from 'next/headers';
 export async function GET() {
   const session = parseSessionCookie((await cookies()).get('session')?.value);
   if (!session) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  const orders = await prisma.order.findMany({ where: { restaurantId: session.restaurantId }, orderBy: { createdAt: 'desc' } });
+  const orders = await prisma.order.findMany({
+    where: { restaurantId: session.restaurantId },
+    orderBy: { createdAt: 'desc' },
+    include: { items: true },
+  });
   return NextResponse.json({ orders });
 }
 

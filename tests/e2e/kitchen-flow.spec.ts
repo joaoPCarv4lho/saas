@@ -15,7 +15,8 @@ test('kitchen marks an order ready', async ({ page, request }) => {
   await page.getByRole('button', { name: 'Nova comanda' }).click();
 
   await page.goto('/kitchen');
-  await expect(page.getByText(/3 — open/)).toBeVisible();
-  await page.getByRole('button', { name: 'Marcar pronto' }).click();
-  await expect(page.getByText(/3 — ready/)).toBeVisible();
+  const ticket = page.locator('.kds-ticket', { hasText: 'MESA 3' });
+  await expect(ticket.getByText('open')).toBeVisible();
+  await ticket.getByRole('button', { name: 'Marcar pronto' }).click();
+  await expect(ticket.getByText('ready')).toBeVisible();
 });

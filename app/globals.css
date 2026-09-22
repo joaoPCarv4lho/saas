@@ -1,13 +1,21 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --paper: #eff1e8;
+  --paper-line: #d7dbc8;
+  --paper-line-soft: #e3e6d6;
+  --ink: #22241c;
+  --ink-soft: #6b6e5c;
+  --steel: #23282b;
+  --steel-line: #3a4247;
+  --steel-ink: #eef1ee;
+  --steel-ink-soft: #9aa5a2;
+  --fire: #e2892b;
+  --fire-ink: #7a3f0a;
+  --alert: #c13a2e;
+  --ready: #3e7d53;
+  --focus: #2f6fed;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 html {
@@ -24,9 +32,11 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -42,8 +52,466 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+button,
+input {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- shared page chrome ---- */
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 20px 96px;
+}
+
+.screen-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.screen-head h1 {
+  font-size: 1.5rem;
+}
+
+.screen-head .count {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--paper-line);
+  background: #fff;
+  border-radius: 3px;
+  color: var(--ink);
+}
+
+.field::placeholder {
+  color: var(--ink-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 3px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  min-height: 46px;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.error-banner {
+  border: 1.5px solid var(--alert);
+  color: var(--alert);
+  background: #fbeceb;
+  padding: 10px 14px;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+/* ---- status chips: shared vocabulary across every screen ---- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.chip[data-status="open"] {
+  background: #e7e2f5;
+  color: #4b3d8f;
+}
+
+.chip[data-status="preparing"],
+.chip[data-status="pending"] {
+  background: #fbe6cd;
+  color: var(--fire-ink);
+}
+
+.chip[data-status="ready"] {
+  background: #dcefe0;
+  color: var(--ready);
+}
+
+.chip[data-status="served"],
+.chip[data-status="paid"] {
+  background: #e4e6dc;
+  color: var(--ink-soft);
+}
+
+.chip[data-status="cancelled"] {
+  background: #f3dbd8;
+  color: var(--alert);
+}
+
+/* ---- login: ticket on the steel counter ---- */
+
+.login-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--steel);
+  padding: 24px;
+}
+
+.ticket-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--paper);
+  border-radius: 4px;
+  padding: 28px 26px 24px;
+  position: relative;
+}
+
+.ticket-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background:
+    radial-gradient(circle at 10px 10px, var(--steel) 9px, transparent 9.5px) repeat-x;
+  background-size: 20px 20px;
+  background-position: 0 0;
+}
+
+.ticket-mark {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+
+.ticket-card h1 {
+  font-size: 1.6rem;
+  margin-bottom: 18px;
+}
+
+.ticket-card form,
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tear-line {
+  border: none;
+  border-top: 2px dashed var(--paper-line);
+  margin: 20px 0 0;
+}
+
+/* ---- comandas list: a rail of ticket stubs ---- */
+
+.stub-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--paper-line);
+}
+
+.stub {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--paper-line);
+}
+
+.stub-table {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  min-width: 2.6ch;
+}
+
+.stub-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.empty-note {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  padding: 24px 4px;
+  text-align: center;
+}
+
+.new-comanda-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: var(--paper);
+  border-top: 1.5px solid var(--paper-line);
+}
+
+.new-comanda-bar .field {
+  flex: 1;
+}
+
+/* ---- order detail: printed receipt ---- */
+
+.receipt-head {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  padding-bottom: 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px dashed var(--paper-line);
+}
+
+.receipt-head h1 {
+  font-size: 1.3rem;
+}
+
+.receipt-lines {
+  list-style: none;
+  padding: 14px 0;
+  border-bottom: 2px dashed var(--paper-line);
+}
+
+.receipt-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.receipt-line .qty {
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  min-width: 2.4ch;
+}
+
+.receipt-line .name {
+  flex-shrink: 0;
+}
+
+.receipt-line .leader {
+  flex: 1;
+  border-bottom: 1px dotted var(--paper-line);
+  transform: translateY(-4px);
+}
+
+.receipt-line .price {
+  font-family: var(--font-mono);
+}
+
+.menu-section h2 {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin: 18px 0 8px;
+  font-weight: 600;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.menu-item-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px;
+  background: #fff;
+  border: 1.5px solid var(--paper-line);
+  border-radius: 3px;
+  text-align: left;
+}
+
+.menu-item-btn:active {
+  background: var(--paper-line-soft);
+}
+
+.menu-item-btn .price {
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+/* ---- kitchen: the expo board ---- */
+
+.kitchen-screen {
+  flex: 1;
+  background: var(--steel);
+  color: var(--steel-ink);
+  padding: 20px 20px 40px;
+}
+
+.kitchen-screen .screen-head .count {
+  color: var(--steel-ink-soft);
+}
+
+.kitchen-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.kds-ticket {
+  background: #2b3134;
+  border: 1px solid var(--steel-line);
+  border-left: 4px solid var(--ink-soft);
+  border-radius: 3px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kds-ticket[data-status="open"] {
+  border-left-color: #8f7fd6;
+}
+
+.kds-ticket[data-status="preparing"] {
+  border-left-color: var(--fire);
+}
+
+.kds-ticket[data-status="ready"] {
+  border-left-color: var(--ready);
+  opacity: 0.6;
+}
+
+.kds-ticket-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.kds-ticket-head .table {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.kds-items {
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--steel-ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kds-ticket .btn {
+  margin-top: 4px;
+  background: var(--steel-ink);
+  color: var(--steel);
+}
+
+.empty-note-dark {
+  color: var(--steel-ink-soft);
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* ---- admin: back-office, denser ---- */
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.admin-category {
+  margin-bottom: 18px;
+}
+
+.admin-category h2 {
+  font-size: 1rem;
+  border-bottom: 1px solid var(--paper-line);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.admin-item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 0.95rem;
+}
+
+.admin-item-row .price {
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 520px) {
+  .admin-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .admin-form .btn {
+    grid-column: 1 / -1;
   }
 }
