@@ -39,6 +39,15 @@ export default function ComandasPage() {
       return;
     }
     const { order } = await res.json();
+    // A fresh order has no items yet; seed the SW's api cache with that fact
+    // so the detail page (whose own GET may not finish before a disconnect)
+    // still has something to render offline instead of spinning forever.
+    if ('caches' in window) {
+      const seeded = new Response(JSON.stringify({ order: { ...order, items: [] } }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      await caches.open('apis').then((c) => c.put(`/api/orders/${order.id}`, seeded));
+    }
     router.push(`/comandas/${order.id}`);
   }
 

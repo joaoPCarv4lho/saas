@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 import { hashPin } from '@/lib/auth';
 
 export async function GET() {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_TEST_SEED !== 'true') {
     return NextResponse.json({ error: 'not found' }, { status: 404 });
   }
   const restaurant = await prisma.restaurant.create({ data: { name: 'E2E', pinHash: hashPin('1234') } });
