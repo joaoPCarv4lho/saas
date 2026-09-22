@@ -38,18 +38,46 @@ export default function AdminMenuPage() {
   }
 
   return (
-    <main>
-      <h1>Cardapio (admin)</h1>
-      <input placeholder="Categoria" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
-      <input placeholder="Item" value={itemName} onChange={(e) => setItemName(e.target.value)} />
-      <input placeholder="Preco (centavos)" type="number" value={priceCents} onChange={(e) => setPriceCents(Number(e.target.value))} />
-      <button onClick={addItem}>Adicionar</button>
-      {categories.map((c) => (
-        <div key={c.id}>
-          <h2>{c.name}</h2>
-          <ul>{c.items.map((i) => <li key={i.id}>{i.name} — R$ {(i.priceCents / 100).toFixed(2)}</li>)}</ul>
-        </div>
-      ))}
+    <main className="screen">
+      <div className="screen-head">
+        <h1>Cardapio</h1>
+        <span className="count mono">admin</span>
+      </div>
+
+      <form
+        className="admin-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          addItem();
+        }}
+      >
+        <input className="field" placeholder="Categoria" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
+        <input className="field" placeholder="Item" value={itemName} onChange={(e) => setItemName(e.target.value)} />
+        <input
+          className="field mono"
+          placeholder="Preco (centavos)"
+          type="number"
+          value={priceCents}
+          onChange={(e) => setPriceCents(Number(e.target.value))}
+        />
+        <button type="submit" className="btn">Adicionar</button>
+      </form>
+
+      {categories.length === 0 ? (
+        <p className="empty-note">Nenhum item cadastrado ainda.</p>
+      ) : (
+        categories.map((c) => (
+          <div key={c.id} className="admin-category">
+            <h2>{c.name}</h2>
+            {c.items.map((i) => (
+              <div key={i.id} className="admin-item-row">
+                <span>{i.name}</span>
+                <span className="price">R$ {(i.priceCents / 100).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+        ))
+      )}
     </main>
   );
 }

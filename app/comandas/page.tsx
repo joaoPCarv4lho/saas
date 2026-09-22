@@ -52,17 +52,43 @@ export default function ComandasPage() {
   }
 
   return (
-    <main>
-      <h1>Comandas</h1>
-      <input placeholder="Mesa" value={locationLabel} onChange={(e) => setLocationLabel(e.target.value)} />
-      <button onClick={createOrder}>Nova comanda</button>
-      <ul>
-        {orders.map((o) => (
-          <li key={o.id}>
-            <a href={`/comandas/${o.id}`}>{o.locationLabel} — {o.status}</a>
-          </li>
-        ))}
-      </ul>
+    <main className="screen">
+      <div className="screen-head">
+        <h1>Comandas</h1>
+        <span className="count mono">{orders.length} aberta{orders.length === 1 ? '' : 's'}</span>
+      </div>
+
+      {orders.length === 0 ? (
+        <p className="empty-note">Nenhuma comanda aberta. Abra uma mesa abaixo.</p>
+      ) : (
+        <ul className="stub-list">
+          {orders.map((o) => (
+            <li key={o.id}>
+              <a className="stub" href={`/comandas/${o.id}`}>
+                <span className="stub-table mono">{o.locationLabel}</span>
+                <span className="stub-label">Mesa {o.locationLabel}</span>
+                <span className="chip" data-status={o.status}>{o.status}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <form
+        className="new-comanda-bar"
+        onSubmit={(e) => {
+          e.preventDefault();
+          createOrder();
+        }}
+      >
+        <input
+          className="field"
+          placeholder="Mesa"
+          value={locationLabel}
+          onChange={(e) => setLocationLabel(e.target.value)}
+        />
+        <button type="submit" className="btn">+ Nova comanda</button>
+      </form>
     </main>
   );
 }
