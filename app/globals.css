@@ -362,6 +362,24 @@ button {
   font-family: var(--font-mono);
 }
 
+.pay-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 14px 0;
+}
+
+.pay-methods {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.pay-methods .btn {
+  flex: 1;
+}
+
 .menu-section h2 {
   font-size: 1rem;
   color: var(--ink-soft);
